@@ -4,7 +4,6 @@ public class PersonVo {
 	
 	//필드
 	private int personId;
-	private int newpersonId;
 	private String name;
 	private String hp;
 	private String company;
@@ -21,7 +20,7 @@ public class PersonVo {
 	public PersonVo(int personId, int newpersonId) {
 		super();
 		this.personId = personId;
-		this.newpersonId = newpersonId;
+		
 	}
 
 
@@ -58,19 +57,6 @@ public class PersonVo {
 		this.personId = personId;
 	}
 
-
-
-
-	public int getNewpersonId() {
-		return newpersonId;
-	}
-
-
-
-
-	public void setNewpersonId(int newpersonId) {
-		this.newpersonId = newpersonId;
-	}
 
 
 
@@ -119,7 +105,7 @@ public class PersonVo {
 
 	@Override
 	public String toString() {
-		return "PersonVo [personId=" + personId + ", newpersonId=" + newpersonId + ", name=" + name + ", hp=" + hp
+		return "PersonVo [personId=" + personId + ", name=" + name + ", hp=" + hp
 				+ ", company=" + company + "]";
 	}
 	

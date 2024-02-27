@@ -8,297 +8,255 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.javaex.vo.PersonVo;
 
+@Repository
 public class PhonebookDao {
-	
-	//필드 
-	
-	//생성자
-	
-	//메소드-gs
-	
-	//메소드-일반
-	
-	//삭제
-	public int personDelete(int no) {
-		int count = -1;
-		
-		// 0. import java.sql.*;
-					Connection conn = null;
-					PreparedStatement pstmt = null;
-					ResultSet rs = null;
-					try {
-					// 1. JDBC 드라이버 (Oracle) 로딩
-						Class.forName("com.mysql.cj.jdbc.Driver");
 
-					// 2. Connection 얻어오기
-						String url = "jdbc:mysql://localhost:3306/phone_db";
-						conn = DriverManager.getConnection(url, "phone", "phone");	
-					// 3. SQL문 준비 / 바인딩 / 실행
-					// SQL문 준비
-						
-						String query = "";
-						query +=" delete from person ";
-						query += " where person_id = ? " ;
-						
-						//바인딩	
-						pstmt = conn.prepareStatement(query);
-						pstmt.setInt(1, no);
-						
-					//실행	
-					
-						count =  pstmt.executeUpdate();
+	// 필드
+	private Connection conn = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private String driver = "com.mysql.cj.jdbc.Driver";
+	private String url = "jdbc:mysql://localhost:3306/phone_db";
+	private String id = "phone";
+	private String pw = "phone";
 
-						
-						
-					// 4.결과처리
-						System.out.println(count + "건 삭제되었습니다.");
-						
-					} catch (ClassNotFoundException e) {
-						System.out.println("error: 드라이버 로딩 실패 - " + e);
-						} catch (SQLException e) {
-						System.out.println("error:" + e);
-						} finally {
-						// 5. 자원정리
-						try {
-						if (rs != null) {
-						rs.close();
-						} 
-						if (pstmt != null) {
-						pstmt.close();
-						}
-						if (conn != null) {
-						conn.close();
-						}
-						} catch (SQLException e) {
-						System.out.println("error:" + e);
-						}
-					}	
-					return count;	
-		}
-	
-	//수정
-		public int personUpdate(PersonVo personVo) {
-			int count = -1;
-			
-			// 0. import java.sql.*;
-						Connection conn = null;
-						PreparedStatement pstmt = null;
-						ResultSet rs = null;
-						try {
-						// 1. JDBC 드라이버 (Oracle) 로딩
-							Class.forName("com.mysql.cj.jdbc.Driver");
+	// 생성자
+	// 메소드-gs
 
-						// 2. Connection 얻어오기
-							String url = "jdbc:mysql://localhost:3306/phone_db";
-							conn = DriverManager.getConnection(url, "phone", "phone");	
-						// 3. SQL문 준비 / 바인딩 / 실행
-						// SQL문 준비
-							
-							String query = " update person ";
-							query += " set person_id = ? ";
-							query += " where person_id = ? " ;
-							
-							 
-							
-						//생성	
-							pstmt = conn.prepareStatement(query);
-							
-						//바인딩
-							pstmt.setInt(1, personVo.getPersonId() );
-							pstmt.setInt(2, personVo.getNewpersonId() );
-							
-						//실행	
-						
-							count =  pstmt.executeUpdate();
+	// 메소드-일반
 
-							
-							
-						// 4.결과처리
-							System.out.println(count + "건 수정되었습니다.");
-							
-						} catch (ClassNotFoundException e) {
-							System.out.println("error: 드라이버 로딩 실패 - " + e);
-							} catch (SQLException e) {
-							System.out.println("error:" + e);
-							} finally {
-							// 5. 자원정리
-							try {
-							if (rs != null) {
-							rs.close();
-							} 
-							if (pstmt != null) {
-							pstmt.close();
-							}
-							if (conn != null) {
-							conn.close();
-							}
-							} catch (SQLException e) {
-							System.out.println("error:" + e);
-							}
-						}	
-						return count;	
-			}
-						
-					
-	
-	//db가져오기
-	public List<PersonVo> personSelect() {
-		
-	List<PersonVo> personList = new ArrayList<PersonVo>();
-	
-			// 0. import java.sql.*;
-			Connection conn = null;
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			
-			try {
-				// 1. JDBC 드라이버 (Oracle) 로딩
-					Class.forName("com.mysql.cj.jdbc.Driver");
-	
-				// 2. Connection 얻어오기
-					String url = "jdbc:mysql://localhost:3306/phone_db";
-					conn = DriverManager.getConnection(url, "phone", "phone");	
-				// 3. SQL문 준비 / 바인딩 / 실행
-				// SQL문 준비
-					String query = "";
-					query += " select person_id, ";
-					query += "	      name, ";
-					query += "        hp, ";
-					query += "	      company ";
-					query += " from person "; //띄어쓰기 주의
-					
-				//바인딩	
-				pstmt = conn.prepareStatement(query);
-					
-				
-				//실행	
-			
-				rs = pstmt.executeQuery();
+	// 연결
+	public void getConnection() {
+		try {
+			// 1. JDBC 드라이버 (Oracle) 로딩
+			Class.forName(driver);
 
-				
-				
-				// 4.결과처리
-				
-				while(rs.next()) {
-					int personId = rs.getInt("person_id");
-					String name = rs.getString("name");
-					String hp = rs.getString("hp");
-					String company = rs.getString("company");
-					
-					//db에서 가져온 데이터 vo로 묶기
-					PersonVo personVo = new PersonVo(personId, name, hp, company);
-					//리스트에 주소 추가
-					personList.add(personVo);
-				}
-			
-				
-			} catch (ClassNotFoundException e) {
+			// 2. Connection 얻어오기
+			conn = DriverManager.getConnection(url, id, pw);
+
+		} catch (ClassNotFoundException e) {
 			System.out.println("error: 드라이버 로딩 실패 - " + e);
-			} catch (SQLException e) {
+
+		} catch (SQLException e) {
 			System.out.println("error:" + e);
-			} finally {
-			// 5. 자원정리
-			try {
+
+		}
+	}
+
+	// 종료
+	public void close() {
+		// 5. 자원정리
+		try {
 			if (rs != null) {
-			rs.close();
-			} 
+				rs.close();
+			}
 			if (pstmt != null) {
-			pstmt.close();
+				pstmt.close();
 			}
 			if (conn != null) {
-			conn.close();
+				conn.close();
 			}
-			} catch (SQLException e) {
+		} catch (SQLException e) {
 			System.out.println("error:" + e);
-			}
-		}	
-				
-			return personList;		
-				/*select  person_id,
-				name,
-		        hp,
-		        company
-		from person;*/
-				
-				
-				/*System.out.println(query);*/
-				
-				/*insert into person
-				values(null, 'ㅇㄷㅅ', '010-1111-2222','02-1111-2222');*/
-			
-			
 		}
-		
-	
-	
-	//등록
+	}
+
+	// 전체가져오기
+	public List<PersonVo> personSelect() {
+
+		this.getConnection();
+
+		List<PersonVo> personList = new ArrayList<PersonVo>();
+
+		try {
+			// 3. SQL문 준비 / 바인딩 / 실행
+			// SQL문 준비
+			String query = "";
+			query += " select person_id, ";
+			query += "	      name, ";
+			query += "        hp, ";
+			query += "	      company ";
+			query += " from person ";
+
+			// 바인딩
+			pstmt = conn.prepareStatement(query);
+
+			// 실행
+			rs = pstmt.executeQuery();
+
+			// 4.결과처리
+			while (rs.next()) {// 반복
+				int personId = rs.getInt("person_id");
+				String name = rs.getString("name");
+				String hp = rs.getString("hp");
+				String company = rs.getString("company");
+
+				// db에서 가져온 데이터 vo로 묶기
+				PersonVo personVo = new PersonVo(personId, name, hp, company);
+				// 리스트에 주소 추가
+				personList.add(personVo);
+			}
+
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		}
+
+		this.close();
+
+		return personList;
+	}
+
+	// 등록
 	public int personInsert(PersonVo personVo) {
 		int count = -1;
-		
-		// 0. import java.sql.*;
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-		// 1. JDBC 드라이버 (Oracle) 로딩
-			Class.forName("com.mysql.cj.jdbc.Driver");
 
-		// 2. Connection 얻어오기
-			String url = "jdbc:mysql://localhost:3306/phone_db";
-			conn = DriverManager.getConnection(url, "phone", "phone");	
-		// 3. SQL문 준비 / 바인딩 / 실행
-		// SQL문 준비
+		this.getConnection();
+		
+		try {
+			// 3. SQL문 준비 / 바인딩 / 실행
+			// SQL문 준비
 			String query = "";
 			query += " insert into person ";
-			query += " values(null, ?, ? ,?) "; //띄어쓰기 필수!!! 못알아 먹는다
-			
-			
-			System.out.println(query);
-			
-			/*insert into person
-			values(null, 'ㅇㄷㅅ', '010-1111-2222','02-1111-2222');*/
-		
-		//바인딩	
+			query += " values(null, ?, ?, ?) ";
+
+			// 바인딩
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, personVo.getName());
 			pstmt.setString(2, personVo.getHp());
 			pstmt.setString(3, personVo.getCompany());
-			
-		//실행	
-		
+
+			// 실행
 			count = pstmt.executeUpdate();
 
-			
-			
-		// 4.결과처리
+			// 4.결과처리
 			System.out.println(count + "건 등록되었습니다.");
-			
-		} catch (ClassNotFoundException e) {
-		System.out.println("error: 드라이버 로딩 실패 - " + e);
+
 		} catch (SQLException e) {
-		System.out.println("error:" + e);
-		} finally {
-		// 5. 자원정리
-		try {
-		if (rs != null) {
-		rs.close();
+			System.out.println("error:" + e);
 		} 
-		if (pstmt != null) {
-		pstmt.close();
-		}
-		if (conn != null) {
-		conn.close();
-		}
-		} catch (SQLException e) {
-		System.out.println("error:" + e);
-		}
-		}
+		
+		this.close();
+
 		return count;
 	}
-	
-	//삭제
-	
 
+	// 삭제
+	public int personDelete(int no) {
+		int count = -1;
+
+		this.getConnection();
+
+		try {
+			// 3. SQL문 준비 / 바인딩 / 실행
+			// SQL문 준비
+			String query = "";
+			query += " delete from person ";
+			query += " where person_id = ? ";
+
+			// 바인딩
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, no);
+
+			// 실행
+			count = pstmt.executeUpdate();
+
+			// 4.결과처리
+			System.out.println(count + "건 삭제되었습니다.");
+
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		}
+
+		this.close();
+
+		return count;
+	}
+
+	// 1개 가져오기
+	public PersonVo personSelectOne(int no) {
+
+		this.getConnection();
+
+		PersonVo personVo = null;
+
+		try {
+			// 3. SQL문 준비 / 바인딩 / 실행
+			// SQL문 준비
+			String query = "";
+			query += " select person_id, ";
+			query += "	      name, ";
+			query += "        hp, ";
+			query += "	      company ";
+			query += " from person ";
+			query += " where person_id=? ";
+
+			// 바인딩
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, no);
+
+			// 실행
+			rs = pstmt.executeQuery();
+
+			// 4.결과처리
+			while (rs.next()) {// 반복
+				int personId = rs.getInt("person_id");
+				String name = rs.getString("name");
+				String hp = rs.getString("hp");
+				String company = rs.getString("company");
+
+				// db에서 가져온 데이터 vo로 묶기
+				personVo = new PersonVo(personId, name, hp, company);
+
+			}
+
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		}
+
+		this.close();
+
+		return personVo;
+	}
+	
+	// 수정
+	public int personUpdate(PersonVo personVo) {
+		int count = -1;
+
+		this.getConnection();
+		
+		try {
+			// 3. SQL문 준비 / 바인딩 / 실행
+			// SQL문 준비
+			String query = "";
+			query += " update person ";
+			query += " set name=?, ";
+			query += " 	   hp=?, ";
+			query += "     company=? ";
+			query += " where person_id = ? ";
+
+			// 바인딩
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, personVo.getName());
+			pstmt.setString(2, personVo.getHp());
+			pstmt.setString(3, personVo.getCompany());
+			pstmt.setInt(4, personVo.getPersonId());
+			
+			// 실행
+			count = pstmt.executeUpdate();
+
+			// 4.결과처리
+			System.out.println(count + "건 수정되었습니다.");
+
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} 
+		
+		this.close();
+
+		return count;
+	}
 }
