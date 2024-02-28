@@ -20,21 +20,21 @@
 <form action="/phonebook5/phone/modify" method="get">
 	<div>
 		<label>이름(name)</label>
-		<input type="text" name="name" value="${requestScope.personVo.name} ">
+		<input type="text" name="name" value="${personVo.name} ">
 	</div>
 	
 	<div>
 		<label>핸드폰(hp)</label>
-		<input type="text" name="hp" value="${requestScope.personVo.hp}">
+		<input type="text" name="hp" value="${personVo.hp}">
 	</div>
 	
 	<div>
 		<label>회사(company)</label>
-		<input type="text" name="company" value="${requestScope.personVo.company}">
+		<input type="text" name="company" value="${personVo.company}">
 	</div>
 	
 	
-	<input type="text" name=personId" value="${requestScope.personVo.personId }"><br>
+	<input type="text" name="personId" value="${personVo.personId }"><br>
 	<button type="submit">수정</button>
 	
 </form>
