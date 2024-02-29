@@ -1,6 +1,8 @@
 package com.javaex.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,16 @@ public class PhonebookService {
 
 		return personVo;
 	}
+	
+	// 수정폼2
+	public Map<String, Object> exeModifyForm2(int no) {
+		System.out.println("PhonebookService.exeModifyForm2()");
+		
+		
+		Map<String, Object> pMap = phonebookDao.personSelectOne2(no); /*SelectOne2 생성*/
+		
+		return pMap;
+	}
 
 	// 등록
 	public void exeWrite(PersonVo personVo) {
@@ -46,6 +58,26 @@ public class PhonebookService {
 		PhonebookDao phonebookDao = new PhonebookDao();
 
 		phonebookDao.personInsert(personVo);
+	}
+	
+	//등록2
+	public int exeWrite2(String name, String hp, String company) {
+		System.out.println("PhonebookService.exeWrite2()");
+		System.out.println(name);
+		System.out.println(hp);
+		System.out.println(company);
+		
+		//PersonVo를 제작해서 묶는다 --> 그런데 딱 1번만 쓸것 같다 --> 따라서 1회용 map 사용
+		Map<String, String> personMap = new HashMap<String, String>();
+		personMap.put("name", name);
+		personMap.put("hp", hp);
+		personMap.put("company", company);
+		
+		
+		
+		int count = phonebookDao.personInsert2(personMap);
+		
+		return count;
 	}
 
 	// 리스트

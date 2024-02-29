@@ -1,6 +1,7 @@
 package com.javaex.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,21 @@ public class PhonebookDao {
 
 		return personVo;
 	}
-
+	
+	//1개 가져오기2
+	public Map<String, Object> personSelectOne2(int no) {
+		System.out.println("PhonebookDao.personSelectOne2()");
+		
+		System.out.println(no);
+		 Map<String, Object> pMap = sqlSession.selectOne("phonebook.selectOne",no );
+			/*
+			 * PersonVo personVo= sqlSession.selectOne(null, sqlSession);
+			 * System.out.println(pMap.get("personId"));
+			 * System.out.println(pMap.get("name")); System.out.println(pMap.get("hp"));
+			 * System.out.println(pMap.get("company"));
+			 */
+		return null;
+	}
 	// 등록
 	public int personInsert(PersonVo personVo) {
 		System.out.println("PhonebookDao.personInsert()");
@@ -54,7 +69,16 @@ public class PhonebookDao {
 
 		return count;
 	}
-
+	
+	//등록 2
+	public int personInsert2(Map<String, String> pMap) {
+	 System.out.println("PhonebookDao.personInsert2()");
+	 System.out.println(pMap);
+	 
+	 int count = sqlSession.insert("phonebook.insert2", pMap);
+	 
+		return count;
+	}
 	// 전체가져오기
 	public List<PersonVo> personSelect() {
 		System.out.println("phonebookService.exeList()");
